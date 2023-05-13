@@ -1,10 +1,13 @@
 "use client";
 import React from "react";
 
+// Components
+import Hero from "@/components/Hero/Hero";
+
 const HomePage = () => {
   return (
     <div>
-      <h1>Welcome</h1>
+      <Hero />
     </div>
   );
 };
