@@ -1,16 +1,14 @@
 "use client";
-import { AxiosError } from "axios";
 import React, { useState } from "react";
-import { register } from "../api/apiCalls";
+import { signIn } from "next-auth/react";
 
 interface ErrorResponse {
   message: string;
 }
 
-const RegisterPage = () => {
+const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
-    username: "",
     password: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,19 +21,12 @@ const RegisterPage = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      await register(formData);
-      alert("Yey, registered");
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      if (axiosError && axiosError.response) {
-        const errorMessage = (axiosError.response.data as ErrorResponse)
-          .message;
-        setErrorMessage(errorMessage);
-      } else {
-        setErrorMessage("An error occurred.");
-      }
-    }
+    const result = await signIn("credentials", {
+      email: formData.email,
+      password: formData.password,
+      redirect: true,
+      callbackUrl: "/",
+    });
   };
 
   return (
@@ -48,13 +39,6 @@ const RegisterPage = () => {
           value={formData.email}
           onChange={handleInputChange}
         />
-        <label htmlFor="username">Username</label>
-        <input
-          type="text"
-          name="username"
-          value={formData.username}
-          onChange={handleInputChange}
-        />
         <label htmlFor="password">Password</label>
         <input
           type="password"
@@ -62,11 +46,11 @@ const RegisterPage = () => {
           value={formData.password}
           onChange={handleInputChange}
         />
-        <input type="submit" value="Register" />
+        <input type="submit" value="Login" />
       </form>
       {errorMessage && <p>{errorMessage}</p>}
     </div>
   );
 };
 
-export default RegisterPage;
+export default LoginPage;

@@ -2,24 +2,19 @@ import { Request, Response } from "express";
 import User from "../models/userSchema";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+require("dotenv").config();
 
-// Helper function to create tokens
-const createTokens = (user: any) => {
-  const accessToken = jwt.sign(
-    { userId: user._id },
-    process.env.ACCESS_TOKEN_SECRET!,
-    {
-      expiresIn: "15m",
-    }
-  );
-  const refreshToken = jwt.sign(
-    { userId: user._id },
-    process.env.REFRESH_TOKEN_SECRET!,
-    {
-      expiresIn: "7d",
-    }
-  );
-  return { accessToken, refreshToken };
+// Helper function to create token
+const createToken = (user: any) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT secret is not defined in the environment");
+  }
+
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+
+  return token;
 };
 
 // Register user
@@ -43,6 +38,17 @@ export const register = async (req: Request, res: Response) => {
     const usernameExists = await User.findOne({ username });
     if (usernameExists) {
       return res.status(400).json({ message: "Username already in use" });
+    }
+
+    // Check username conditions
+    if (username.length < 5) {
+      return res
+        .status(400)
+        .json({ message: "Username must be at least 5 characters" });
+    }
+
+    if (!username.trim()) {
+      return res.status(400).json({ message: "Username cannot be empty" });
     }
 
     // Check password conditions
@@ -78,8 +84,8 @@ export const register = async (req: Request, res: Response) => {
 
     const savedUser = await newUser.save();
 
-    const tokens = createTokens(savedUser);
-    res.json({ user: savedUser, tokens });
+    const token = createToken(savedUser);
+    res.json({ user: savedUser, token });
   } catch (error) {
     res.status(500).json({ message: "Error registering new user", error });
   }
@@ -98,8 +104,8 @@ export const login = async (req: Request, res: Response) => {
     if (!validPassword)
       return res.status(400).json({ message: "Incorrect email or password" });
 
-    const tokens = createTokens(user);
-    res.json({ user, tokens });
+    const token = createToken(user);
+    res.json({ user, token });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error });
   }
