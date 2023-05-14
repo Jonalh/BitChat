@@ -1,14 +1,9 @@
-import React from "react";
+import Sidebar from "@/components/Sidebar/Sidebar";
 
-// Components
-import Hero from "@/components/Hero/Hero";
-
-const HomePage = () => {
+export default async function Home() {
   return (
     <div>
-      <Hero />
+      <Sidebar />
     </div>
   );
-};
-
-export default HomePage;
+}

@@ -2,7 +2,7 @@ import express from "express";
 import connectDB from "./config/db";
 import userRoutes from "./routes/userRoutes";
 import bodyParser from "body-parser";
-import cors from "cors"
+import cors from "cors";
 require("dotenv").config();
 
 const app = express();
@@ -18,5 +18,5 @@ app.use(cors());
 app.use("/api/v1/user", userRoutes);
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Server listening on port ${port}`);
 });
