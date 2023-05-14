@@ -1,21 +1,13 @@
-"use client";
-import { SessionProvider } from "next-auth/react";
-import { ReactNode } from "react";
-import NavBar from "../components/NavBar/NavBar";
+// Components
+import NavBar from "@/components/NavBar/NavBar";
 import "./index.scss";
-interface IProps {
-  children: ReactNode;
-  session: any;
-}
 
-export default function RootLayout({ children, session }: IProps) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <SessionProvider session={session}>
-          <NavBar />
-          <div>{children}</div>
-        </SessionProvider>
+        <NavBar />
+        {children}
       </body>
     </html>
   );
