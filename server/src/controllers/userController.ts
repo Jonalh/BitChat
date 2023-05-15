@@ -110,3 +110,86 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error logging in", error });
   }
 };
+
+// Add friend
+export const addFriend = async (req: Request, res: Response) => {
+  const { userId, friendId } = req.body;
+
+  if (!userId || !friendId) {
+    return res
+      .status(400)
+      .json({ message: "Both userId and friendId are required" });
+  }
+
+  // Ensure a user cannot add themselves as a friend
+  if (userId === friendId) {
+    return res
+      .status(400)
+      .json({ message: "You cannot add yourself as a friend" });
+  }
+
+  try {
+    // Find the user and update the friends array
+    const user = await User.findById(userId);
+    const friend = await User.findById(friendId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!friend) {
+      return res.status(404).json({ message: "Friend not found" });
+    }
+
+    // Check if friendId already exists in the user's friends array
+    if (user.friends.includes(friendId)) {
+      return res.status(400).json({ message: "Friend already added" });
+    }
+
+    // Check if the friendId exists as a user
+    const friendExists = await User.findById(friendId);
+    if (!friendExists) {
+      return res.status(404).json({ message: "Friend not found" });
+    }
+
+    // Add friends
+    user.friends.push(friendId);
+    friend.friends.push(userId);
+    await user.save();
+    await friend.save();
+
+    res.json({ message: "Friend added successfully", user, friend });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding friend", error });
+  }
+};
+
+// Find friends
+export const getFriends = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: "userId is required" });
+  }
+
+  try {
+    // Find the user
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Fetch each friend's data
+    const friends = await Promise.all(
+      user.friends.map(async (friendId: string) => {
+        const friend = await User.findById(friendId);
+        return friend;
+      })
+    );
+
+    res.json({ friends });
+  } catch (error) {
+    res.status(500).json({ message: "Error getting friends", error });
+  }
+};

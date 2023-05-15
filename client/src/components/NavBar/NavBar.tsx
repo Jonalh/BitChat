@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import "./style.scss";
 
-const NavBar = () => {
+const Navbar = () => {
   const { data: session } = useSession();
 
   const [loading, setLoading] = useState(true);
@@ -16,25 +17,24 @@ const NavBar = () => {
   }, [session]);
 
   return !loading ? (
-    <div className="NavBar">
+    <div className="Navbar">
       {session?.user ? (
         <>
           <Link href="/">Home</Link>
-          <button onClick={() => signOut()}>Sign out</button>
+          <Link href="/login" onClick={() => signOut()}>
+            Logout
+          </Link>
         </>
       ) : (
         <>
-          <Link href="/">Home</Link>
-          <br />
           <Link href="/register">Register</Link>
-          <br />
-          <button onClick={() => signIn()}>Sign in</button>
+          <Link href="/login">Login</Link>
         </>
       )}
     </div>
   ) : (
-    <p>Loading...</p>
+    <div className="Navbar">Loading...</div>
   );
 };
 
-export default NavBar;
+export default Navbar;

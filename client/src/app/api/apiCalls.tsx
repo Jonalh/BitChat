@@ -16,3 +16,8 @@ export const login = async (data: any) => {
 export const getUser = (email: any) => {
   return axios.get(`${prefix}/user/${email}`);
 };
+
+// Get friends
+export const getFriends = (id: any) => {
+  return axios.get(`${prefix}/user/friend/${id}`);
+};

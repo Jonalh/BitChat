@@ -1,4 +1,4 @@
-import NavBar from "@/components/NavBar/NavBar";
+import Navbar from "@/components/Navbar/Navbar";
 import { NextAuthProvider } from "./providers";
 import "./index.scss";
 
@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <NextAuthProvider>
-          <NavBar />
+          <Navbar />
           {children}
         </NextAuthProvider>
       </body>
