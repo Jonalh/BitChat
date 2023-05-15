@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar/Navbar";
 import { NextAuthProvider } from "./providers";
+import { ChatContextProvider } from "./context/chat";
 import "./index.scss";
 
 export const metadata = {
@@ -15,10 +16,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <NextAuthProvider>
-          <Navbar />
-          {children}
-        </NextAuthProvider>
+        <ChatContextProvider>
+          <NextAuthProvider>
+            <Navbar />
+            {children}
+          </NextAuthProvider>
+        </ChatContextProvider>
       </body>
     </html>
   );

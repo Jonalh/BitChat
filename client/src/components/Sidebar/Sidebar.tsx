@@ -2,9 +2,12 @@
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { getFriends } from "@/app/api/apiCalls";
+import { useChatContext } from "@/app/context/chat";
 import "./style.scss";
 
 const Sidebar = () => {
+  const { user2, setUser2 } = useChatContext();
+
   const { data: session, status } = useSession();
   const loading = status === "loading";
   const [friends, setFriends] = useState([]);
@@ -32,8 +35,8 @@ const Sidebar = () => {
       </div>
       <div className="chats">
         {friends.map((friend) => (
-          <div key={friend.id} className="friend">
-            <p>{friend.username}</p>
+          <div key={friend._id} className="friend">
+            <p onClick={() => setUser2(friend._id)}>{friend.username}</p>
           </div>
         ))}
       </div>

@@ -1,6 +1,7 @@
 import express from "express";
 import connectDB from "./config/db";
 import userRoutes from "./routes/userRoutes";
+import chatRoutes from "./routes/chatRoutes";
 import bodyParser from "body-parser";
 import cors from "cors";
 require("dotenv").config();
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/chat", chatRoutes);
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);

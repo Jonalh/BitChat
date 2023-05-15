@@ -21,3 +21,8 @@ export const getUser = (email: any) => {
 export const getFriends = (id: any) => {
   return axios.get(`${prefix}/user/friend/${id}`);
 };
+
+// Get chat
+export const getChat = (user1: any, user2: any) => {
+  return axios.get(`${prefix}/chat/findchat/${user1}/${user2}`);
+};
